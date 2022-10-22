@@ -24,4 +24,5 @@ public class CardDto {
     private boolean type; //0 Debit card, 1 credit card
 
     private int phone;
+
 }

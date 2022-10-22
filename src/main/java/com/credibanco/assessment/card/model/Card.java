@@ -1,11 +1,18 @@
 package com.credibanco.assessment.card.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import net.bytebuddy.dynamic.loading.InjectionClassLoader;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name="cards", uniqueConstraints = {@UniqueConstraint(columnNames = {"pan"})})
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Card {
 
     @Id
