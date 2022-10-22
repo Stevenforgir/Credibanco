@@ -17,8 +17,8 @@ public class CardDto {
     @NotBlank(message = "Empty Owner")
     private String owner;
 
-    @NotNull(message = "Empty id")
-    private long id;  //cedula
+    @NotNull(message = "Empty identification")
+    private long identification;  //cedula
 
     @NotNull(message = "Empty type")
     private boolean type; //0 Debit card, 1 credit card
