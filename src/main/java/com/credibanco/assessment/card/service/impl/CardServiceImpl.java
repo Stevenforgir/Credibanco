@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CardServiceImpl implements CardService {
@@ -25,12 +26,56 @@ public class CardServiceImpl implements CardService {
     public CardDto saveCard(CardDto cardDto) {
         //Card card = cardRepository.findByPan(cardDto.getPan());
         //if(card == null){
+            cardDto.setCreated(true);
+            int n = 100;
+            cardDto.setValidationNumber((int) (Math.random() * n) + 1);
+
+            String mp = cardDto.getPan()+"";
+            String mask = "";
+            if (mp.length() == 16){
+                mask = "######xxxxxx####";
+            } else if (mp.length() == 17) {
+                mask = "######xxxxxxx####";
+            } else if (mp.length() == 18) {
+                mask = "######xxxxxxxx####";
+            } else if (mp.length() == 19) {
+                mask = "######xxxxxxxxx####";
+            } else {
+                //poner excepcion
+            }
+
+        String maskedCard = maskCardNumber(mp, mask);
+            cardDto.setMaskedPan(maskedCard);
+
             Card card = cardRepository.save(cardDaoMapper.toDao(cardDto));
             cardDto = cardDtoMapper.toDto(card);
             return cardDto;
         //}else{
         //    return cardDto;
         //}
+    }
+
+
+    public static String maskCardNumber(String cardNumber, String mask) {
+
+        // format the number
+        int index = 0;
+        StringBuilder maskedNumber = new StringBuilder();
+        for (int i = 0; i < mask.length(); i++) {
+            char c = mask.charAt(i);
+            if (c == '#') {
+                maskedNumber.append(cardNumber.charAt(index));
+                index++;
+            } else if (c == 'x') {
+                maskedNumber.append(c);
+                index++;
+            } else {
+                maskedNumber.append(c);
+            }
+        }
+
+        // return the masked number
+        return maskedNumber.toString();
     }
 
     @Override
@@ -41,6 +86,16 @@ public class CardServiceImpl implements CardService {
             cardDtoList.add(cardDtoMapper.toDto(card));
         });
         return cardDtoList;
+    }
+
+    @Override
+    public ArrayList<CardDto> getAllCard() {
+        return null;
+    }
+
+    @Override
+    public Optional<CardDto> findCardByPan(long pan) {
+        return Optional.empty();
     }
 
     //@Override

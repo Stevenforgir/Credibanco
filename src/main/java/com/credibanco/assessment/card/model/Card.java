@@ -22,16 +22,28 @@ public class Card {
     @Column(name="pan")
     private long pan;
 
-    @Column(name="owner")
+    @Column(name="enmascarado")
+    private String maskedPan;
+
+    @Column(name="titular")
     private String owner;
 
-    @Column(name="identification")
+    @Column(name="cedula")
     private long identification;  //cedula
 
-    @Column(name="type")
-    private boolean type; //0 Debit card, 1 credit card
+    @Column(name="tipo")
+    private char type; //0 Debit card, 1 credit card
 
-    @Column(name="phone")
+    @Column(name="telefono")
     private int phone;
+
+    @Column(name="creada")
+    private boolean created;
+
+    @Column(name="validacion")
+    private int validationNumber;
+
+    @Column(name="activada")
+    private boolean activated;
 
 }
