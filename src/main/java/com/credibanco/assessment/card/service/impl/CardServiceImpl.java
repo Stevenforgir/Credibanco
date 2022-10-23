@@ -1,6 +1,7 @@
 package com.credibanco.assessment.card.service.impl;
 
 import com.credibanco.assessment.card.dto.CardDto;
+import com.credibanco.assessment.card.dto.CardDtoResponse;
 import com.credibanco.assessment.card.mapper.impl.CardDaoMapperImpl;
 import com.credibanco.assessment.card.mapper.impl.CardDtoMapperImpl;
 import com.credibanco.assessment.card.model.Card;
@@ -23,9 +24,10 @@ public class CardServiceImpl implements CardService {
     ICardRepository cardRepository;
 
     @Override
-    public CardDto saveCard(CardDto cardDto) {
+    public CardDtoResponse saveCard(CardDto cardDto) {
         //Card card = cardRepository.findByPan(cardDto.getPan());
         //if(card == null){
+            CardDtoResponse cardDtoResponse = new CardDtoResponse();
             cardDto.setCreated(true);
             int n = 100;
             cardDto.setValidationNumber((int) (Math.random() * n) + 1);
@@ -44,17 +46,20 @@ public class CardServiceImpl implements CardService {
                 //poner excepcion
             }
 
-        String maskedCard = maskCardNumber(mp, mask);
-            cardDto.setMaskedPan(maskedCard);
+            String maskedCard = maskCardNumber(mp, mask);
 
             Card card = cardRepository.save(cardDaoMapper.toDao(cardDto));
             cardDto = cardDtoMapper.toDto(card);
-            return cardDto;
+
+            cardDtoResponse.setMaskedPan(maskedCard);
+            cardDtoResponse.setResponseCode(01);
+            cardDtoResponse.setResultStatus("Éxito");
+            cardDtoResponse.setValidationNumber(cardDto.getValidationNumber());
+            return cardDtoResponse;
         //}else{
         //    return cardDto;
         //}
     }
-
 
     public static String maskCardNumber(String cardNumber, String mask) {
 

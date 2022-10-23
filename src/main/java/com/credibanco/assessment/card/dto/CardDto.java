@@ -15,8 +15,6 @@ public class CardDto {
     @NotNull(message = "Empty PAN")
     private long pan;
 
-    private String maskedPan;
-
     @NotBlank(message = "Empty Owner")
     private String owner;
 

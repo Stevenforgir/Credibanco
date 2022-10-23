@@ -10,7 +10,6 @@ public class CardDtoMapperImpl implements CardDtoMapper {
         CardDto cardDto = new CardDto();
         cardDto.setIdentification(card.getIdentification());
         cardDto.setPan(card.getPan());
-        cardDto.setMaskedPan(card.getMaskedPan());
         cardDto.setOwner(card.getOwner());
         cardDto.setPhone(card.getPhone());
         cardDto.setType(card.getType());

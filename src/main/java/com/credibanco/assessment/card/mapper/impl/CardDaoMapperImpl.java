@@ -10,7 +10,6 @@ public class CardDaoMapperImpl implements CardDaoMapper {
         Card card = new Card();
         card.setIdentification(cardDto.getIdentification());
         card.setPan(cardDto.getPan());
-        card.setMaskedPan(cardDto.getMaskedPan());
         card.setOwner(cardDto.getOwner());
         card.setPhone(cardDto.getPhone());
         card.setType(cardDto.getType());

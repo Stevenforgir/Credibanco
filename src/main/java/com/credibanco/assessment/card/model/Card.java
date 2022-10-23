@@ -22,9 +22,6 @@ public class Card {
     @Column(name="pan")
     private long pan;
 
-    @Column(name="enmascarado")
-    private String maskedPan;
-
     @Column(name="titular")
     private String owner;
 
