@@ -1,7 +1,6 @@
 package com.credibanco.assessment.card.controller;
 
 import com.credibanco.assessment.card.dto.*;
-import com.credibanco.assessment.card.model.Card;
 import com.credibanco.assessment.card.repository.ICardRepository;
 import com.credibanco.assessment.card.service.CardService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,4 +41,5 @@ public class CardController {
     public CardDtoDeleteResponse deleteUser(@Valid @RequestBody CardDtoDeleteRequest cardDtoDelete) {
         return cardService.deleteCard(cardDtoDelete);
     }
+
 }
