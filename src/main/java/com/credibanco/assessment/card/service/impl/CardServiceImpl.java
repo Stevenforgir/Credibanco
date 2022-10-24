@@ -27,9 +27,10 @@ public class CardServiceImpl implements CardService {
         CardDtoResponse cardDtoResponse = new CardDtoResponse();
         String maskedCard = "";
         String idNumber = cardDto.getIdentification() +"";
+        char type = cardDto.getType();
 
         if(card == null) {
-            if(10 <= idNumber.length() && idNumber.length() <= 15){
+            if(10 <= idNumber.length() && idNumber.length() <= 15 && (type == 'c' || type =='d')){
                 cardDto.setCreated(true);
                 int n = 100;
                 cardDto.setValidationNumber((int) (Math.random() * n) + 1);
@@ -47,7 +48,7 @@ public class CardServiceImpl implements CardService {
                 cardDtoResponse.setResponseCode("01");
                 cardDtoResponse.setResultStatus("Éxito");
                 cardDtoResponse.setValidationNumber(cardDto.getValidationNumber());
-            } else { //Error por cantidad de numeros en documento
+            } else { //Error por cantidad de numeros en documento o tipo de tarjeta
                 cardDtoResponse.setMaskedPan(maskedCard);
                 cardDtoResponse.setResponseCode("00");
                 cardDtoResponse.setResultStatus("Fallido");
@@ -59,7 +60,6 @@ public class CardServiceImpl implements CardService {
             cardDtoResponse.setResponseCode("00");
             cardDtoResponse.setResultStatus("Fallido");
             cardDtoResponse.setValidationNumber(0);
-
         }
         return cardDtoResponse;
     }
@@ -141,13 +141,14 @@ public class CardServiceImpl implements CardService {
     public static String preMaskCardNumber(int length){
         String mask = "";
         if (length == 16) {
-            mask = "######xxxxxx####";
+            mask = "######******####";
         } else if (length == 17) {
-            mask = "######xxxxxxx####";
+            //mask = "######xxxxxxx####";
+            mask = "######*******####";
         } else if (length == 18) {
-            mask = "######xxxxxxxx####";
+            mask = "######********####";
         } else if (length == 19) {
-            mask = "######xxxxxxxxx####";
+            mask = "######*********####";
         } else {
             //poner excepcion por error en cantidad de numeros
         }
@@ -163,7 +164,7 @@ public class CardServiceImpl implements CardService {
             if (c == '#') {
                 maskedNumber.append(cardNumber.charAt(index));
                 index++;
-            } else if (c == 'x') {
+            } else if (c == '*') {
                 maskedNumber.append(c);
                 index++;
             } else {
