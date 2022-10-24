@@ -26,26 +26,33 @@ public class CardServiceImpl implements CardService {
         Card card = cardRepository.findByPan(cardDto.getPan());
         CardDtoResponse cardDtoResponse = new CardDtoResponse();
         String maskedCard = "";
+        String idNumber = cardDto.getIdentification() +"";
 
         if(card == null) {
-            cardDto.setCreated(true);
-            int n = 100;
-            cardDto.setValidationNumber((int) (Math.random() * n) + 1);
+            if(10 <= idNumber.length() && idNumber.length() <= 15){
+                cardDto.setCreated(true);
+                int n = 100;
+                cardDto.setValidationNumber((int) (Math.random() * n) + 1);
 
-            String mp = cardDto.getPan() + "";
-            String mask = "";
+                String mp = cardDto.getPan() + "";
+                String mask = "";
 
-            mask = preMaskCardNumber(mp.length());
-            maskedCard = maskCardNumber(mp, mask);
+                mask = preMaskCardNumber(mp.length());
+                maskedCard = maskCardNumber(mp, mask);
 
-            Card saveCard = cardRepository.save(cardDaoMapper.toDao(cardDto));
-            cardDto = cardDtoMapper.toDto(saveCard);
+                Card saveCard = cardRepository.save(cardDaoMapper.toDao(cardDto));
+                cardDto = cardDtoMapper.toDto(saveCard);
 
-            cardDtoResponse.setMaskedPan(maskedCard);
-            cardDtoResponse.setResponseCode("01");
-            cardDtoResponse.setResultStatus("Éxito");
-            cardDtoResponse.setValidationNumber(cardDto.getValidationNumber());
-
+                cardDtoResponse.setMaskedPan(maskedCard);
+                cardDtoResponse.setResponseCode("01");
+                cardDtoResponse.setResultStatus("Éxito");
+                cardDtoResponse.setValidationNumber(cardDto.getValidationNumber());
+            } else { //Error por cantidad de numeros en documento
+                cardDtoResponse.setMaskedPan(maskedCard);
+                cardDtoResponse.setResponseCode("00");
+                cardDtoResponse.setResultStatus("Fallido");
+                cardDtoResponse.setValidationNumber(0);
+            }
         }
         else{
             cardDtoResponse.setMaskedPan(maskedCard);
