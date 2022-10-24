@@ -109,6 +109,25 @@ public class CardServiceImpl implements CardService {
         return cardDtoCheckResponse;
     }
 
+    @Override
+    public CardDtoDeleteResponse deleteCard(CardDtoDeleteRequest cardDtoDelete) {
+        CardDtoDeleteResponse cardDtoDeleteResponse = new CardDtoDeleteResponse();
+        Card card = cardRepository.findByPan(cardDtoDelete.getPan());
+        if(card == null){
+            //throw new NotFoundException("dniNumber: " + dniNumber);
+        } else {
+            if (cardDtoDelete.getValidationNumber() == card.getValidationNumber()){
+                cardRepository.delete(card);
+                cardDtoDeleteResponse.setMessage("Se ha eliminado la tarjeta");
+                cardDtoDeleteResponse.setResponseCode("00");
+            } else {
+                cardDtoDeleteResponse.setMessage("No se ha eliminado la tarjeta");
+                cardDtoDeleteResponse.setResponseCode("01");
+            }
+        }
+        return cardDtoDeleteResponse;
+    }
+
     public static String preMaskCardNumber(int length){
         String mask = "";
         if (length == 16) {

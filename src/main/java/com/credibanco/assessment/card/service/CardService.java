@@ -15,4 +15,6 @@ public interface CardService {
     CardDto findByPan(long pan);
 
     CardDtoCheckResponse checkCard(CardDtoCheckRequest cardDtoCheck);
+
+    CardDtoDeleteResponse deleteCard(CardDtoDeleteRequest cardDtoDelete);
 }

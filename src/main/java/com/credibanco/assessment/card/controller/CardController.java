@@ -37,4 +37,9 @@ public class CardController {
     public CardDtoCheckResponse checkCard(@Valid @RequestBody CardDtoCheckRequest cardDtoCheck){
         return cardService.checkCard(cardDtoCheck);
     }
+
+    @DeleteMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/delete")
+    public CardDtoDeleteResponse deleteUser(@Valid @RequestBody CardDtoDeleteRequest cardDtoDelete) {
+        return cardService.deleteCard(cardDtoDelete);
+    }
 }
