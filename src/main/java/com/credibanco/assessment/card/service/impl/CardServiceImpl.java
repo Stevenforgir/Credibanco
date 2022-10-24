@@ -65,6 +65,7 @@ public class CardServiceImpl implements CardService {
 
         if(card == null) {
             cardDtoActivateResponse.setMaskedPan("");
+            cardDtoActivateResponse.setResponseCode("01");
             cardDtoActivateResponse.setMessage("Tarjeta no existe");
         } else {
             if (cardDto.getValidationNumber() == card.getValidationNumber()) { //Si encuentra la tarjeta
@@ -78,9 +79,11 @@ public class CardServiceImpl implements CardService {
                 maskedCard = maskCardNumber(mp, mask);
 
                 cardDtoActivateResponse.setMaskedPan(maskedCard);
+                cardDtoActivateResponse.setResponseCode("00");
                 cardDtoActivateResponse.setMessage("Éxito");
             } else {
                 cardDtoActivateResponse.setMaskedPan(maskedCard);
+                cardDtoActivateResponse.setResponseCode("02");
                 cardDtoActivateResponse.setMessage("Número de validacion inválido");
             }
         }

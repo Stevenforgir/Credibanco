@@ -5,6 +5,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.*;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.Date;
 
 @Data  //minimal constructor ( Mandatory Data )
 @AllArgsConstructor
@@ -22,4 +25,6 @@ public class TransactionDto {
 
     @NotNull(message = "Empty purchase address")
     private String purchaseAddress;
+
+    private Timestamp time;
 }

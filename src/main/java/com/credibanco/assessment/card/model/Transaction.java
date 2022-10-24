@@ -3,8 +3,12 @@ package com.credibanco.assessment.card.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
 @Table(name="transactions", uniqueConstraints = {@UniqueConstraint(columnNames = {"referencia"})})
@@ -28,4 +32,7 @@ public class Transaction {
     @Column(name="direccion")
     private String purchaseAddress;
 
+    @Column(name="fecha")
+    @CreationTimestamp
+    private Timestamp time;
 }
