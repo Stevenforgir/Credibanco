@@ -7,9 +7,8 @@ import lombok.NoArgsConstructor;
 @Data  //minimal constructor ( Mandatory Data )
 @AllArgsConstructor
 @NoArgsConstructor
-public class CardDtoResponse {
+public class CardDtoActivateResponse {
     private String responseCode;
-    private int validationNumber;
-    private String resultStatus;
+    private String message;
     private String maskedPan;
 }

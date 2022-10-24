@@ -1,6 +1,8 @@
 package com.credibanco.assessment.card.service.impl;
 
 import com.credibanco.assessment.card.dto.CardDto;
+import com.credibanco.assessment.card.dto.CardDtoActivateRequest;
+import com.credibanco.assessment.card.dto.CardDtoActivateResponse;
 import com.credibanco.assessment.card.dto.CardDtoResponse;
 import com.credibanco.assessment.card.mapper.impl.CardDaoMapperImpl;
 import com.credibanco.assessment.card.mapper.impl.CardDtoMapperImpl;
@@ -25,42 +27,86 @@ public class CardServiceImpl implements CardService {
 
     @Override
     public CardDtoResponse saveCard(CardDto cardDto) {
-        //Card card = cardRepository.findByPan(cardDto.getPan());
-        //if(card == null){
-            CardDtoResponse cardDtoResponse = new CardDtoResponse();
+        Card card = cardRepository.findByPan(cardDto.getPan());
+        CardDtoResponse cardDtoResponse = new CardDtoResponse();
+        String maskedCard = "";
+
+        if(card == null) {
             cardDto.setCreated(true);
             int n = 100;
             cardDto.setValidationNumber((int) (Math.random() * n) + 1);
 
-            String mp = cardDto.getPan()+"";
+            String mp = cardDto.getPan() + "";
             String mask = "";
-            if (mp.length() == 16){
-                mask = "######xxxxxx####";
-            } else if (mp.length() == 17) {
-                mask = "######xxxxxxx####";
-            } else if (mp.length() == 18) {
-                mask = "######xxxxxxxx####";
-            } else if (mp.length() == 19) {
-                mask = "######xxxxxxxxx####";
-            } else {
-                //poner excepcion
-            }
 
-            String maskedCard = maskCardNumber(mp, mask);
+            mask = preMaskCardNumber(mp.length());
+            maskedCard = maskCardNumber(mp, mask);
 
-            Card card = cardRepository.save(cardDaoMapper.toDao(cardDto));
-            cardDto = cardDtoMapper.toDto(card);
+            Card saveCard = cardRepository.save(cardDaoMapper.toDao(cardDto));
+            cardDto = cardDtoMapper.toDto(saveCard);
 
             cardDtoResponse.setMaskedPan(maskedCard);
-            cardDtoResponse.setResponseCode(01);
+            cardDtoResponse.setResponseCode("01");
             cardDtoResponse.setResultStatus("Éxito");
             cardDtoResponse.setValidationNumber(cardDto.getValidationNumber());
-            return cardDtoResponse;
-        //}else{
-        //    return cardDto;
-        //}
+
+        }
+        else{
+            cardDtoResponse.setMaskedPan(maskedCard);
+            cardDtoResponse.setResponseCode("00");
+            cardDtoResponse.setResultStatus("Fallido");
+            cardDtoResponse.setValidationNumber(0);
+
+        }
+        return cardDtoResponse;
     }
 
+    @Override
+    public CardDtoActivateResponse activateCard(CardDtoActivateRequest cardDto) {
+        Card card = cardRepository.findByPan(cardDto.getPan());
+        CardDtoActivateResponse cardDtoActivateResponse = new CardDtoActivateResponse();
+        String maskedCard = "";
+        System.out.println("datos ingresados para activar: " + card.getPan());
+
+        if(card == null) {
+            cardDtoActivateResponse.setMaskedPan("");
+            cardDtoActivateResponse.setMessage("Tarjeta no existe");
+        } else {
+            if (cardDto.getValidationNumber() == card.getValidationNumber()) { //Si encuentra la tarjeta
+                card.setActivated(true);
+                card = cardRepository.save(card);
+
+                String mp = cardDto.getPan() + "";
+                String mask = "";
+
+                mask = preMaskCardNumber(mp.length());
+                maskedCard = maskCardNumber(mp, mask);
+
+                cardDtoActivateResponse.setMaskedPan(maskedCard);
+                cardDtoActivateResponse.setMessage("Éxito");
+            } else {
+                cardDtoActivateResponse.setMaskedPan(maskedCard);
+                cardDtoActivateResponse.setMessage("Número de validacion inválido");
+            }
+        }
+        return cardDtoActivateResponse;
+    }
+
+    public static String preMaskCardNumber(int length){
+        String mask = "";
+        if (length == 16) {
+            mask = "######xxxxxx####";
+        } else if (length == 17) {
+            mask = "######xxxxxxx####";
+        } else if (length == 18) {
+            mask = "######xxxxxxxx####";
+        } else if (length == 19) {
+            mask = "######xxxxxxxxx####";
+        } else {
+            //poner excepcion por error en cantidad de numeros
+        }
+        return mask;
+    }
     public static String maskCardNumber(String cardNumber, String mask) {
 
         // format the number
@@ -99,8 +145,15 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public Optional<CardDto> findCardByPan(long pan) {
-        return Optional.empty();
+    public CardDto findByPan(long pan) {
+        try {
+            CardDto cardDto;
+            cardDto = cardDtoMapper.toDto(cardRepository.findByPan(pan));
+            return cardDto;
+        }catch (Exception exception){
+            //throw new NotFoundException("dniNumber: " + dniNumber);
+            return null;
+        }
     }
 
     //@Override

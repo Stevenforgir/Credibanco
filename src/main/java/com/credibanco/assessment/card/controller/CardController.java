@@ -1,6 +1,8 @@
 package com.credibanco.assessment.card.controller;
 
 import com.credibanco.assessment.card.dto.CardDto;
+import com.credibanco.assessment.card.dto.CardDtoActivateRequest;
+import com.credibanco.assessment.card.dto.CardDtoActivateResponse;
 import com.credibanco.assessment.card.dto.CardDtoResponse;
 import com.credibanco.assessment.card.model.Card;
 import com.credibanco.assessment.card.repository.ICardRepository;
@@ -27,5 +29,15 @@ public class CardController {
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/save")
     public CardDtoResponse saveCard(@Valid @RequestBody CardDto card){
         return cardService.saveCard(card);
+    }
+
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/activate")
+    public CardDtoActivateResponse activateCard(@Valid @RequestBody CardDtoActivateRequest cardDtoActivate){
+        return cardService.activateCard(cardDtoActivate);
+    }
+
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/checking")
+    public CardDtoActivateResponse checkCard(@Valid @RequestBody CardDtoActivateRequest cardDtoActivate){
+        return cardService.activateCard(cardDtoActivate);
     }
 }
