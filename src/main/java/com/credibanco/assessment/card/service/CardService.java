@@ -1,9 +1,6 @@
 package com.credibanco.assessment.card.service;
 
-import com.credibanco.assessment.card.dto.CardDto;
-import com.credibanco.assessment.card.dto.CardDtoActivateRequest;
-import com.credibanco.assessment.card.dto.CardDtoActivateResponse;
-import com.credibanco.assessment.card.dto.CardDtoResponse;
+import com.credibanco.assessment.card.dto.*;
 import com.credibanco.assessment.card.model.Card;
 
 import java.util.ArrayList;
@@ -16,4 +13,6 @@ public interface CardService {
     List<CardDto> findAll();
     ArrayList<CardDto> getAllCard();
     CardDto findByPan(long pan);
+
+    CardDtoCheckResponse checkCard(CardDtoCheckRequest cardDtoCheck);
 }

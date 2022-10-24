@@ -1,9 +1,6 @@
 package com.credibanco.assessment.card.service.impl;
 
-import com.credibanco.assessment.card.dto.CardDto;
-import com.credibanco.assessment.card.dto.CardDtoActivateRequest;
-import com.credibanco.assessment.card.dto.CardDtoActivateResponse;
-import com.credibanco.assessment.card.dto.CardDtoResponse;
+import com.credibanco.assessment.card.dto.*;
 import com.credibanco.assessment.card.mapper.impl.CardDaoMapperImpl;
 import com.credibanco.assessment.card.mapper.impl.CardDtoMapperImpl;
 import com.credibanco.assessment.card.model.Card;
@@ -66,7 +63,6 @@ public class CardServiceImpl implements CardService {
         Card card = cardRepository.findByPan(cardDto.getPan());
         CardDtoActivateResponse cardDtoActivateResponse = new CardDtoActivateResponse();
         String maskedCard = "";
-        System.out.println("datos ingresados para activar: " + card.getPan());
 
         if(card == null) {
             cardDtoActivateResponse.setMaskedPan("");
@@ -90,6 +86,27 @@ public class CardServiceImpl implements CardService {
             }
         }
         return cardDtoActivateResponse;
+    }
+
+    @Override
+    public CardDtoCheckResponse checkCard(CardDtoCheckRequest cardDtoCheck) {
+        CardDtoCheckResponse cardDtoCheckResponse = new CardDtoCheckResponse();
+        Card card = cardRepository.findByPan(cardDtoCheck.getPan());
+        String maskedCard = "";
+
+        String mp = cardDtoCheck.getPan() + "";
+        String mask = "";
+
+        mask = preMaskCardNumber(mp.length());
+        maskedCard = maskCardNumber(mp, mask);
+
+        cardDtoCheckResponse.setMaskedPan(maskedCard);
+        cardDtoCheckResponse.setIdentification(card.getIdentification());
+        cardDtoCheckResponse.setOwner(card.getOwner());
+        cardDtoCheckResponse.setStatus(card.isActivated());
+        cardDtoCheckResponse.setPhone(card.getPhone());
+
+        return cardDtoCheckResponse;
     }
 
     public static String preMaskCardNumber(int length){
@@ -155,11 +172,4 @@ public class CardServiceImpl implements CardService {
             return null;
         }
     }
-
-    //@Override
-    //public CardDto findByPan(long pan) {
-     //   CardDto cardDto;
-      //  cardDto = cardDtoMapper.toDto(cardRepository.findByPan(Integer.valueOf(pan)));
-       // return userDto;
-    //}
 }
