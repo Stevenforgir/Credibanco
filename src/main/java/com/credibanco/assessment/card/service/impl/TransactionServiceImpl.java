@@ -1,6 +1,9 @@
 package com.credibanco.assessment.card.service.impl;
 
 import com.credibanco.assessment.card.dto.*;
+import com.credibanco.assessment.card.exceptions.BadRequestException;
+import com.credibanco.assessment.card.exceptions.HandlerRequestException;
+import com.credibanco.assessment.card.exceptions.NotFoundException;
 import com.credibanco.assessment.card.mapper.CardDaoMapper;
 import com.credibanco.assessment.card.mapper.CardDtoMapper;
 import com.credibanco.assessment.card.mapper.TransactionDaoMapper;
@@ -61,22 +64,26 @@ public class TransactionServiceImpl implements TransactionService {
                         transactionDtoCreateResponse.setResponseCode("02");
                         transactionDtoCreateResponse.setMessage("Tarjeta No Enrolada");
                         transactionDtoCreateResponse.setReferenceNumber(transactionDto.getReferenceNumber());
+                        throw new BadRequestException(transactionDtoCreateResponse, "La tarjeta no está activada");
                     }
                 } else {
                     transactionDtoCreateResponse.setTransactionStatus("Rechazada");
                     transactionDtoCreateResponse.setResponseCode("01");
                     transactionDtoCreateResponse.setMessage("Tarjeta No Existe");
                     transactionDtoCreateResponse.setReferenceNumber(transactionDto.getReferenceNumber());
+                    throw new NotFoundException(transactionDtoCreateResponse, "Tarjeta no encontrada");
                 }
             } else {
                 transactionDtoCreateResponse.setMessage("Número de referencia inválido");
                 transactionDtoCreateResponse.setReferenceNumber(transactionDto.getReferenceNumber());
+                throw new BadRequestException(transactionDtoCreateResponse, "Número de referencia no es válido");
             }
         } else {
             transactionDtoCreateResponse.setTransactionStatus("Rechazada");
             transactionDtoCreateResponse.setResponseCode("03");
             transactionDtoCreateResponse.setMessage("Referencia de transaccion ya existe");
             transactionDtoCreateResponse.setReferenceNumber(transactionDto.getReferenceNumber());
+            throw new BadRequestException(transactionDtoCreateResponse, "Numero de compra ya existe");
         }
         return transactionDtoCreateResponse;
     }
@@ -92,27 +99,32 @@ public class TransactionServiceImpl implements TransactionService {
         String minutes = String.valueOf(ChronoUnit.MINUTES.between(localDateTimeBefore, LocalDateTime.now()));
         int minutesInt = Integer.parseInt(minutes);
 
+        int referenceNumber = transactionDto.getReferenceNumber();
+
         Card card = cardRepository.findByPan(panTransaction);
-        String referenceNumber = transactionDto.getReferenceNumber() + "";
+        if (card == null){
+            transactionDtoCancelResponse = cancelResponseGeneration(referenceNumber);
+            throw new BadRequestException(transactionDtoCancelResponse, "El número de tarjeta no coincide");
+        }
 
         if(transaction != null){
-            if(transactionDto.getPan() == card.getPan() && transactionDto.getReferenceNumber() == transaction.getReferenceNumber()){
+            /*if(transactionDto.getPan() == card.getPan()){*/
                 if(minutesInt < 5){
                     transactionRepository.delete(transaction);
                     transactionDtoCancelResponse.setResponseCode("00");
                     transactionDtoCancelResponse.setMessage("Compra anulada");
                     transactionDtoCancelResponse.setReferenceNumber(transaction.getReferenceNumber());
-                    transactionDtoCancelResponse.setMinutes(minutes);
                 } else {
-                    transactionDtoCancelResponse.setResponseCode("00");
-                    transactionDtoCancelResponse.setMessage("No se puede anular la transaccion");
-                    transactionDtoCancelResponse.setReferenceNumber(transaction.getReferenceNumber());
-                    transactionDtoCancelResponse.setMinutes(minutes);
+                    transactionDtoCancelResponse = cancelResponseGeneration(referenceNumber);
+                    throw new BadRequestException(transactionDtoCancelResponse,"Se agotó el tiempo permitido para cancelar la transacción");
                 }
-
-            }
+            /*} else {
+                transactionDtoCancelResponse = cancelResponseGeneration(referenceNumber);
+                throw new BadRequestException(transactionDtoCancelResponse, "El número de tarjeta no coincide");
+            }*/
         } else {
-
+            transactionDtoCancelResponse = cancelResponseGeneration(referenceNumber);
+            throw new NotFoundException(transactionDtoCancelResponse,"No existe la transacción");
         }
         return transactionDtoCancelResponse;
     }
@@ -138,5 +150,12 @@ public class TransactionServiceImpl implements TransactionService {
             //throw new NotFoundException("dniNumber: " + dniNumber);
             return null;
         }
+    }
+    public TransactionDtoCancelResponse cancelResponseGeneration( int referenceNumber){
+        TransactionDtoCancelResponse transactionDtoCancelResponse = new TransactionDtoCancelResponse();
+        transactionDtoCancelResponse.setResponseCode("00");
+        transactionDtoCancelResponse.setMessage("No se puede anular la transaccion");
+        transactionDtoCancelResponse.setReferenceNumber(referenceNumber);
+        return transactionDtoCancelResponse;
     }
 }

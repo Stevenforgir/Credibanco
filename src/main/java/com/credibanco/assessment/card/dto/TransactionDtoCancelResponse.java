@@ -12,5 +12,4 @@ public class TransactionDtoCancelResponse {
     private String responseCode;
     private String message;
     private int referenceNumber;
-    private String minutes;
 }

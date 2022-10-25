@@ -1,5 +1,6 @@
 package com.credibanco.assessment.card.exceptions;
 
+import com.credibanco.assessment.card.dto.CardDtoResponse;
 import lombok.Getter;
 import lombok.ToString;
 

@@ -27,7 +27,7 @@ public class Card {
     private long identification;  //cedula
 
     @Column(name="tipo")
-    private char type; //0 Debit card, 1 credit card
+    private char type;
 
     @Column(name="telefono")
     private int phone;
