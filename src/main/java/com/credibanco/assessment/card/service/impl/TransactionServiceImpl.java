@@ -45,7 +45,7 @@ public class TransactionServiceImpl implements TransactionService {
         Card card = cardRepository.findByPan(transactionDto.getPan());
         String referenceNumber = transactionDto.getReferenceNumber() + "";
 
-        if(transaction == null){
+        if(transaction == null){ //invertirlo para no encadenar if
             if (referenceNumber.length() == 6){
                 if (card != null){
                     if(card.isActivated()){
@@ -76,7 +76,7 @@ public class TransactionServiceImpl implements TransactionService {
             } else {
                 transactionDtoCreateResponse.setMessage("Número de referencia inválido");
                 transactionDtoCreateResponse.setReferenceNumber(transactionDto.getReferenceNumber());
-                throw new BadRequestException(transactionDtoCreateResponse, "Número de referencia no es válido");
+                throw new HandlerRequestException (transactionDtoCreateResponse, "Número de referencia no es válido");
             }
         } else {
             transactionDtoCreateResponse.setTransactionStatus("Rechazada");
@@ -136,7 +136,6 @@ public class TransactionServiceImpl implements TransactionService {
             transactionDto = transactionDtoMapper.toDto(transactionRepository.findByReferenceNumber(referenceNumber));
             return transactionDto;
         }catch (Exception exception){
-            //throw new NotFoundException("dniNumber: " + dniNumber);
             return null;
         }
     }

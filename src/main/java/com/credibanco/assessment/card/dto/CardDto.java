@@ -12,6 +12,8 @@ import javax.validation.constraints.*;
 @NoArgsConstructor
 public class CardDto {
 
+    private long id;
+
     @NotNull(message = "Empty PAN")
     private long pan;
 

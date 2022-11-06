@@ -32,7 +32,7 @@ public class CardController {
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/activate")
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     public CardDtoActivateResponse activateCard(@Valid @RequestBody CardDtoActivateRequest cardDtoActivate){
         return cardService.activateCard(cardDtoActivate);
     }

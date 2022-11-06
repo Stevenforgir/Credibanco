@@ -12,6 +12,8 @@ public interface CardService {
     ArrayList<CardDto> getAllCard();
     CardDto findByPan(long pan);
 
+    CardDto findById(long id);
+
     CardDtoCheckResponse checkCard(CardDtoCheckRequest cardDtoCheck);
 
     CardDtoDeleteResponse deleteCard(CardDtoDeleteRequest cardDtoDelete);

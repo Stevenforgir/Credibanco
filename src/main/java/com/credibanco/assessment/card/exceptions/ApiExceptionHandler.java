@@ -52,4 +52,12 @@ public class ApiExceptionHandler {
     public ErrorMessage handlerRequest(HttpServletRequest request, Exception exception) {
         return new ErrorMessage(exception, request.getRequestURI());
     }
+
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler({
+            Exception.class,
+    })
+    public ErrorMessage serverException(HttpServletRequest request, Exception exception) {
+        return new ErrorMessage(exception, request.getRequestURI());
+    }
 }

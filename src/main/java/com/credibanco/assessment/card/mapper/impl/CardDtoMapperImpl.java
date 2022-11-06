@@ -8,6 +8,7 @@ public class CardDtoMapperImpl implements CardDtoMapper {
     @Override
     public CardDto toDto(Card card){
         CardDto cardDto = new CardDto();
+        cardDto.setId(card.getId());
         cardDto.setIdentification(card.getIdentification());
         cardDto.setPan(card.getPan());
         cardDto.setOwner(card.getOwner());

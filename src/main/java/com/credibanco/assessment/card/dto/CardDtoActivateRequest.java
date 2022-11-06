@@ -10,6 +10,9 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CardDtoActivateRequest {
+
+    private long id;
+
     @NotNull(message = "Empty pan")
     private long pan;
     @NotNull(message = "Empty validation number")

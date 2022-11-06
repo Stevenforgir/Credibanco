@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ICardRepository extends JpaRepository<Card, Long> {
     Card findByPan(long pan);
+    Card findById(long id);
 }

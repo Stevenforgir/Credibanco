@@ -87,7 +87,7 @@ public class CardServiceImpl implements CardService {
                 card.setActivated(true);
                 card = cardRepository.save(card);
 
-                String mp = cardDto.getPan() + "";
+                String mp = card.getPan() + "";
                 String mask = "";
 
                 mask = preMaskCardNumber(mp.length());
@@ -113,7 +113,7 @@ public class CardServiceImpl implements CardService {
 
         if (card == null){
             throw new NotFoundException("Tarjeta no existe");
-        } else {
+        } else { //no es necesario
             String maskedCard = "";
 
             String mp = cardDtoCheck.getPan() + "";
@@ -231,5 +231,14 @@ public class CardServiceImpl implements CardService {
         cardDtoResponse.setResultStatus("Fallido");
         cardDtoResponse.setValidationNumber(0);
         return cardDtoResponse;
+    }
+    public CardDto findById(long id) {
+        try {
+            CardDto cardDto;
+            cardDto = cardDtoMapper.toDto(cardRepository.findById(id));
+            return cardDto;
+        }catch (Exception exception){
+            return null;
+        }
     }
 }
